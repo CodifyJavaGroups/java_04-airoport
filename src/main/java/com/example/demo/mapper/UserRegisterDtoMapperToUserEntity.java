@@ -4,7 +4,7 @@ import com.example.demo.dto.userdtos.UserRegisterDto;
 import com.example.demo.entity.UserEntity;
 
 public class UserRegisterDtoMapperToUserEntity {
-    public static UserEntity toDto(UserRegisterDto userRegisterDto){
+    public static UserEntity toEntity(UserRegisterDto userRegisterDto){
         UserEntity userEntity = new UserEntity();
         userEntity.setFirstName(userRegisterDto.getFirstName());
         userEntity.setLastName(userRegisterDto.getLastName());
