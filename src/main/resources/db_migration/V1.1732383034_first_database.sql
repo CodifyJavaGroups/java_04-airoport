@@ -3,7 +3,9 @@ create table users(
     login varchar(50) not null,
     password varchar not null,
     passport_id bigint references passports(id),
-    passenger_id bigint references passengers(id)
+    passenger_id bigint references passengers(id),
+    date_create_user date not null,
+    date_update_user date default now()
 );
 
 create table roles(
@@ -20,7 +22,7 @@ create table passports(
     id bigserial primary key,
     first_name varchar(50) not null,
     last_name varchar(50) not null,
-    passport_id varchar(9) unique not null,
+    user_passport_id varchar(9) unique not null,
     date_of_expiry date not null,
     date_of_birth date not null
 );
@@ -43,13 +45,13 @@ create table tickets(
 create table flights(
     id bigserial primary key,
     status varchar(50) not null,
-    place_of_departure int references airport(id),
-    place_of_arrival int references  airport(id),
+    place_of_departure int references airports(id),
+    place_of_arrival int references  airports(id),
     departure_time date not null,
     arrival_time date not null
 );
 
-create table airport(
+create table airports(
     id bigserial primary key,
     iata_code varchar(10) not null,
     location varchar(255) not null
