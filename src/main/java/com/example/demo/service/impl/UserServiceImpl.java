@@ -1,10 +1,11 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.dto.userdtos.UserManipulationDto;
 import com.example.demo.dto.userdtos.UserRegisterDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.mapper.UserRegisterDtoMapperToUserEntity;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
