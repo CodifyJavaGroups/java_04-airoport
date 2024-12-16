@@ -9,8 +9,8 @@ public class UserEntityMapperToUserDto {
     public static UserDto toDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
         userDto.setId(userEntity.getId());
-        userDto.setFirstName(userEntity.getFirstName());
-        userDto.setLastName(userEntity.getLastName());
+        userDto.setFirstName(userEntity.getPassports().get(0).getFirstName());
+        userDto.setLastName(userEntity.getPassports().get(0).getLastName());
         userDto.setLogin(userEntity.getLogin());
         return userDto;
     }
