@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,9 +24,18 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Логин не может быть пустым")
+    @Pattern(regexp = "^[a-z0-9]+$", message = "Логин не может содержать только маленькие символы и цифры")
+    @Size(min = 8, max = 25, message = "Логин пользователя может быть от 8 до 25 символов")
     @Column(name = "login")
     private String login;
 
+    @NotBlank(message = "Пароль не может быть пустым")
+    @Size(min = 8, message = "Пароль должен содержать хотя бы 8 символов")
+    @Pattern(regexp = ".*[A-Z].*", message = "Пароль должен содержать хотя бы одну заглавную букву")
+    @Pattern(regexp = ".*[a-z].*", message = "Пароль должен содержать хотя бы одну строчную букву")
+    @Pattern(regexp = ".*\\d.*", message = "Пароль должен содержать хотя бы одну цифру")
+    @Pattern(regexp = ".*[!@#$%^&*(),.?\":{}|<>].*", message = "Пароль должен содержать хотя бы один специальный символ")
     @Column(name = "password")
     private String password;
 
@@ -51,6 +63,11 @@ public class UserEntity implements UserDetails {
     @PrePersist
     private void setNowToCreateDateUser(){
         dateCreateUser = LocalDate.now();
+    }
+
+    @PreUpdate
+    private void setNowToUpdateDateUser(){
+        dateUpdateUser = LocalDate.now();
     }
 
     @Override

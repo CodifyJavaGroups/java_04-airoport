@@ -1,8 +1,5 @@
 package com.example.demo.controller;
-
-import com.example.demo.dto.userdtos.UserManipulationDto;
 import com.example.demo.dto.userdtos.UserDto;
-import com.example.demo.dto.userdtos.UserRegisterDto;
 import com.example.demo.mapper.UserEntityMapperToUserDto;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +21,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers().stream().map(UserEntityMapperToUserDto::toDto).toList());
     }
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserRegisterDto user) {
-        return ResponseEntity.ok(UserEntityMapperToUserDto.toDto(userService.createUser(user)));
-    }
-
     @GetMapping(value = "/get-by/id/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(UserEntityMapperToUserDto.toDto(userService.getUserById(id)));
@@ -39,19 +31,21 @@ public class UserController {
         return ResponseEntity.ok(UserEntityMapperToUserDto.toDto(userService.getByLogin(login)));
     }
 
-    @PutMapping(value = "/update")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserRegisterDto user) {
-        return ResponseEntity.ok(UserEntityMapperToUserDto.toDto(userService.updateUser(user)));
-    }
+    //TODO: Переделывать
+//    @PutMapping(value = "/update")
+//    public ResponseEntity<UserDto> updateUser(@RequestBody UserRegisterDto user) {
+//        return ResponseEntity.ok(UserEntityMapperToUserDto.toDto(userService.updateUser(user)));
+//    }
 
     @DeleteMapping(value = "/delete-by/id/{id}")
     public void deleteUserById(@PathVariable Long id) {
         userService.deleteUserById(id);
     }
 
-    @DeleteMapping(value = "/delete")
-    public void deleteUser(@RequestBody UserManipulationDto user) {
-        userService.deleteUser(user);
-    }
+    //TODO: Переделывать
+//    @DeleteMapping(value = "/delete")
+//    public void deleteUser(@RequestBody UserManipulationDto user) {
+//        userService.deleteUser(user);
+//    }
 }
 
