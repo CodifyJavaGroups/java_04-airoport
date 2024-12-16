@@ -10,9 +10,8 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeesResponseDto {
-    private Long Id;
+public class EmployeeCreateDto {
     private String position;
     private BigDecimal salary;
-    private Long idUser;
+    private UserDto userRegisterDto;
 }
