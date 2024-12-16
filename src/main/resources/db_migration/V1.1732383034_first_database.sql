@@ -1,3 +1,22 @@
+
+create table passports(
+    id bigserial primary key,
+    first_name varchar(50) not null,
+    last_name varchar(50) not null,
+    user_passport_id varchar(9) unique not null,
+    date_of_expiry date not null,
+    date_of_birth date not null
+);
+
+create table flights(
+    id bigserial primary key,
+    status varchar(50) not null,
+    place_of_departure int references airports(id),
+    place_of_arrival int references  airports(id),
+    departure_time date not null,
+    arrival_time date not null
+);
+
 create table users(
     id bigserial primary key not null,
     login varchar(50) not null,
@@ -6,6 +25,13 @@ create table users(
     passenger_id bigint references passengers(id),
     date_create_user date not null,
     date_update_user date default now()
+);
+
+create table passengers
+(
+    id bigserial primary key,
+    passport_id bigint references passports(id),
+    flight_id bigint references flights(id)
 );
 
 create table roles(
@@ -18,21 +44,6 @@ create table m2m_users_roles(
     role_id bigint references roles(id)
 );
 
-create table passports(
-    id bigserial primary key,
-    first_name varchar(50) not null,
-    last_name varchar(50) not null,
-    user_passport_id varchar(9) unique not null,
-    date_of_expiry date not null,
-    date_of_birth date not null
-);
-
-create table passengers
-(
-    id bigserial primary key,
-    passport_id bigint references passports(id),
-    flight_id bigint references flights(id)
-);
 
 create table tickets(
     id bigserial primary key,
@@ -42,14 +53,6 @@ create table tickets(
     flight_id bigint references flights(id)
 );
 
-create table flights(
-    id bigserial primary key,
-    status varchar(50) not null,
-    place_of_departure int references airports(id),
-    place_of_arrival int references  airports(id),
-    departure_time date not null,
-    arrival_time date not null
-);
 
 create table airports(
     id bigserial primary key,

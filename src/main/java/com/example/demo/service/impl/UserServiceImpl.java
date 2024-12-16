@@ -1,25 +1,36 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.userdtos.UserManipulationDto;
-import com.example.demo.dto.userdtos.UserRegisterDto;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.exceptions.RegisterUnsuccessException;
 import com.example.demo.mapper.UserRegisterDtoMapperToUserEntity;
+import com.example.demo.repositories.RoleRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<UserEntity> getAllUsers() {
@@ -49,25 +60,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public UserEntity createUser(UserRegisterDto userRegisterDto) {
-        if (userRegisterDto == null) {
-            throw new IllegalArgumentException("Неккоректный запрос");
-        }
-        if (StringUtils.isEmpty(userRegisterDto.getLogin()) ||
-                StringUtils.isEmpty(userRegisterDto.getPassword()) ||
-                StringUtils.isEmpty(userRegisterDto.getFirstName()) ||
-                StringUtils.isEmpty(userRegisterDto.getLastName())) {
-            throw new IllegalArgumentException("Все обязательные поля должны быть заполнены");
-        }
-        if (!userRegisterDto.getLogin().matches("[a-z0-9]+")) {
-            throw new IllegalArgumentException("Логин должен состоять только из строчных букв и цифр");
-        }
-        if (userRegisterDto.getLogin().length() > 50 || userRegisterDto.getPassword().length() > 50) {
-            throw new IllegalArgumentException("Логин и пароль не могут превышать 50 символов");
-        }
-        UserEntity user = UserRegisterDtoMapperToUserEntity.toEntity(userRegisterDto);
-        user = userRepository.save(user);
-        return user;
+    public UserEntity createUser(@Valid UserEntity user) throws RegisterUnsuccessException {
+
+
+
+
+
+        return userRepository.save(user);
     }
 
     public void deleteUserById(Long id) {
@@ -88,33 +87,38 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteByLogin(userDeleteDto.getLogin());
     }
 
-    public UserEntity updateUser(UserRegisterDto userRegisterDto) {
-        if (userRegisterDto == null) {
-            throw new IllegalArgumentException("Некорректный запрос");
-        }
+    // TODO: Надо переделывать
+//    public UserEntity updateUser(UserEntity userRegisterDto) {
+//        if (userRegisterDto == null) {
+//            throw new IllegalArgumentException("Некорректный запрос");
+//        }
+//
+//        if (StringUtils.isEmpty(userRegisterDto.getLogin()) ||
+//                StringUtils.isEmpty(userRegisterDto.getPassword()) ||
+//                StringUtils.isEmpty(userRegisterDto.getFirstName()) ||
+//                StringUtils.isEmpty(userRegisterDto.getLastName())) {
+//            throw new IllegalArgumentException("Параметры не могут быть пустыми");
+//        }
+//
+//
+//        if (!userRegisterDto.getLogin().matches("[a-z0-9]+")) {
+//            throw new IllegalArgumentException("Логин должен содержать только маленькие буквы и цифры");
+//        }
+//
+//
+//        UserEntity user = userRepository.findByLogin(userRegisterDto.getLogin());
+//        if (user == null) {
+//            throw new IllegalArgumentException("Пользователь с логином \"" + userRegisterDto.getLogin() + "\" не был найден");
+//        }
+//
+//        user = UserRegisterDtoMapperToUserEntity.toEntity(userRegisterDto);
+//        user.setId(user.getId());
+//        user = userRepository.save(user);
+//        return user;
+//    }
 
-        if (StringUtils.isEmpty(userRegisterDto.getLogin()) ||
-                StringUtils.isEmpty(userRegisterDto.getPassword()) ||
-                StringUtils.isEmpty(userRegisterDto.getFirstName()) ||
-                StringUtils.isEmpty(userRegisterDto.getLastName())) {
-            throw new IllegalArgumentException("Параметры не могут быть пустыми");
-        }
-
-
-        if (!userRegisterDto.getLogin().matches("[a-z0-9]+")) {
-            throw new IllegalArgumentException("Логин должен содержать только маленькие буквы и цифры");
-        }
-
-
-        UserEntity user = userRepository.findByLogin(userRegisterDto.getLogin());
-        if (user == null) {
-            throw new IllegalArgumentException("Пользователь с логином \"" + userRegisterDto.getLogin() + "\" не был найден");
-        }
-
-        user = UserRegisterDtoMapperToUserEntity.toEntity(userRegisterDto);
-        user.setId(user.getId());
-        user = userRepository.save(user);
-        return user;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByLogin(username);
     }
-
 }
